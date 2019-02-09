@@ -13,12 +13,12 @@ class DialogueCommand {
 
     val commandSpec = CommandSpec.builder()
             .description(Text.of("Command to open dialogues."))
-            .permission("anothercore.command.dialogue")
+            .permission("dialoguecreator.command.dialogue")
             .arguments(GenericArguments.onlyOne(GenericArguments.string(Text.of("dialogue-id"))))
             .executor { src, args ->
                     if(src is Player) {
                         val dialogueId = args.getOne<String>("dialogue-id").get()
-                        if (!src.hasPermission("anothercore.dialogue.$dialogueId")) {
+                        if (!src.hasPermission("dialoguecreator.dialogue.$dialogueId")) {
                             src.localizedMessage("command.dialogue.nopermission")
                             return@executor CommandResult.success()
                         }
@@ -29,7 +29,7 @@ class DialogueCommand {
                         }
                         Dialogue.setPlayerDialogueData(
                                 src as EntityPlayerMP,
-                                mutableListOf(dialogue),
+                                mutableListOf(dialogue.buildDialogue(DialogueCreator.INSTANCE.placeholderService, src)),
                                 true)
                     }
 
